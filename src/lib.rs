@@ -1,7 +1,5 @@
 #![feature(macro_rules)]
 
-use std::num::Int;
-
 pub static BLOCK_BYTES  : uint  = 128;
 pub static KEY_BYTES    : uint  = 64;
 pub static OUT_BYTES    : uint  = 64;
