@@ -226,7 +226,7 @@ fn store64(b: &mut [u8], v: u64) {
 }
 
 #[cfg(test)]
-mod test {
+mod tests {
     use super::{Blake2b, KEY_BYTES, OUT_BYTES};
 
     mod kat;
