@@ -1,5 +1,8 @@
 #![feature(macro_rules)]
 
+#[cfg(test)]
+extern crate test;
+
 pub static BLOCK_BYTES  : uint  = 128;
 pub static KEY_BYTES    : uint  = 64;
 pub static OUT_BYTES    : uint  = 64;
@@ -267,5 +270,35 @@ mod tests {
             h.final(out);
             assert_eq!(out.as_slice(), kat::blake2b_keyed[i].as_slice());
         }
+    }
+}
+
+#[cfg(test)]
+mod bench {
+    use super::{Blake2b, OUT_BYTES};
+    use test::Bencher;
+
+    fn bench_chunk_size(b: &mut Bencher, n: uint) {
+        let mut h = Blake2b::new(OUT_BYTES);
+        let input = Vec::from_elem(n, 0);
+        b.bytes = input.len() as u64;
+        b.iter(|| {
+            h.update(input.as_slice());
+        });
+    }
+
+    #[bench]
+    fn bench_blake2b_16(b: &mut Bencher) {
+        bench_chunk_size(b, 16);
+    }
+
+    #[bench]
+    fn bench_blake2b_1k(b: &mut Bencher) {
+        bench_chunk_size(b, 1 << 10);
+    }
+
+    #[bench]
+    fn bench_blake2b_64k(b: &mut Bencher) {
+        bench_chunk_size(b, 1 << 16);
     }
 }
