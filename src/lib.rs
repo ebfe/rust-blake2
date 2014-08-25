@@ -1,5 +1,4 @@
 #![feature(macro_rules)]
-extern crate debug;
 
 use std::num::Int;
 
