@@ -133,7 +133,7 @@ impl Blake2b {
             store64(buf.mut_slice_from(i*8), self.h[i]);
         }
 
-        for i in range(0, out.len()) {
+        for i in range(0, std::cmp::min(out.len(), OUT_BYTES)) {
             out[i] = buf[i];
         }
     }
