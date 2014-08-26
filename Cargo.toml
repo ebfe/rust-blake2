@@ -1,8 +1,8 @@
 [package]
 
-name = "rust-blake2b"
+name = "rust-blake2"
 version = "0.0.0"
 authors = ["Michael Gehring <mg@ebfe.org>"]
 
 [lib]
-name = "blake2b"
+name = "blake2"
