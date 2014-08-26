@@ -236,12 +236,12 @@ mod tests {
             input[i] = i as u8;
         }
 
-        for i in range(0, kat::blake2b.len()) {
+        for i in range(0, kat::blake2b_kat.len()) {
             let mut h = Blake2b::new(OUT_BYTES);
             let mut out = [0u8, ..OUT_BYTES];
             h.update(input.slice(0, i));
             h.final(out);
-            assert_eq!(out.as_slice(), kat::blake2b[i].as_slice());
+            assert_eq!(out.as_slice(), kat::blake2b_kat[i].as_slice());
         }
     }
 
@@ -258,12 +258,12 @@ mod tests {
             key[i] = i as u8;
         }
 
-        for i in range(0, kat::blake2b_keyed.len()) {
+        for i in range(0, kat::blake2b_keyed_kat.len()) {
             let mut h = Blake2b::new_with_key(OUT_BYTES, key.as_slice());
             let mut out = [0u8, ..OUT_BYTES];
             h.update(input.slice(0, i));
             h.final(out);
-            assert_eq!(out.as_slice(), kat::blake2b_keyed[i].as_slice());
+            assert_eq!(out.as_slice(), kat::blake2b_keyed_kat[i].as_slice());
         }
     }
 }

@@ -219,3 +219,48 @@ fn store32(b: &mut [u8], v: u32) {
         w >>= 8;
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::{Blake2s, KEY_BYTES, OUT_BYTES};
+
+    mod kat;
+
+    #[test]
+    fn test_blake2s_kat() {
+        let mut input = [0u8, ..256];
+        for i in range(0, input.len()) {
+            input[i] = i as u8;
+        }
+
+        for i in range(0, kat::blake2s_kat.len()) {
+            let mut h = Blake2s::new(OUT_BYTES);
+            let mut out = [0u8, ..OUT_BYTES];
+            h.update(input.slice(0, i));
+            h.final(out);
+            assert_eq!(out.as_slice(), kat::blake2s_kat[i].as_slice());
+        }
+    }
+
+    #[test]
+    fn test_blake2s_keyed_kat() {
+        let mut input = [0u8, ..256];
+        let mut key = [0u8, ..KEY_BYTES];
+
+        for i in range(0, input.len()) {
+            input[i] = i as u8;
+        }
+
+        for i in range(0, key.len()) {
+            key[i] = i as u8;
+        }
+
+        for i in range(0, kat::blake2s_keyed_kat.len()) {
+            let mut h = Blake2s::new_with_key(OUT_BYTES, key.as_slice());
+            let mut out = [0u8, ..OUT_BYTES];
+            h.update(input.slice(0, i));
+            h.final(out);
+            assert_eq!(out.as_slice(), kat::blake2s_keyed_kat[i].as_slice());
+        }
+    }
+}
