@@ -264,3 +264,33 @@ mod tests {
         }
     }
 }
+
+#[cfg(test)]
+mod bench {
+    use super::{Blake2s, OUT_BYTES};
+    use test::Bencher;
+
+    fn bench_chunk_size(b: &mut Bencher, n: uint) {
+        let mut h = Blake2s::new(OUT_BYTES);
+        let input = Vec::from_elem(n, 0);
+        b.bytes = input.len() as u64;
+        b.iter(|| {
+            h.update(input.as_slice());
+        });
+    }
+
+    #[bench]
+    fn bench_blake2s_16(b: &mut Bencher) {
+        bench_chunk_size(b, 16);
+    }
+
+    #[bench]
+    fn bench_blake2s_1k(b: &mut Bencher) {
+        bench_chunk_size(b, 1 << 10);
+    }
+
+    #[bench]
+    fn bench_blake2s_64k(b: &mut Bencher) {
+        bench_chunk_size(b, 1 << 16);
+    }
+}
