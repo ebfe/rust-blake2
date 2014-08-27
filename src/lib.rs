@@ -8,3 +8,4 @@ pub use blake2s::Blake2s;
 
 mod blake2b;
 mod blake2s;
+#[cfg(test)] mod kat;

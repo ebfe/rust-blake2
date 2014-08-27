@@ -223,8 +223,7 @@ fn store32(b: &mut [u8], v: u32) {
 #[cfg(test)]
 mod tests {
     use super::{Blake2s, KEY_BYTES, OUT_BYTES};
-
-    mod kat;
+    use super::super::kat;
 
     #[test]
     fn test_blake2s_kat() {

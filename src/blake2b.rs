@@ -226,8 +226,7 @@ fn store64(b: &mut [u8], v: u64) {
 #[cfg(test)]
 mod tests {
     use super::{Blake2b, KEY_BYTES, OUT_BYTES};
-
-    mod kat;
+    use super::super::kat;
 
     #[test]
     fn test_blake2b_kat() {
