@@ -226,6 +226,20 @@ mod tests {
     use super::super::kat;
 
     #[test]
+    fn test_blake2s_out_size() {
+        let input = [0u8, ..256];
+
+        for i in range(0, kat::blake2s_kat_out_size.len()) {
+            let out_size = i+1;
+            let mut out = [0u8, ..OUT_BYTES];
+            let mut h = Blake2s::new(out_size);
+            h.update(input.as_slice());
+            h.final(out.mut_slice(0, out_size));
+            assert_eq!(out.slice(0, out_size), kat::blake2s_kat_out_size[i]);
+        }
+    }
+
+    #[test]
     fn test_blake2s_kat() {
         let mut input = [0u8, ..256];
         for i in range(0, input.len()) {
