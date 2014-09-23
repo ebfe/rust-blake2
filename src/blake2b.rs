@@ -125,7 +125,7 @@ impl Blake2b {
         }
         self.compress();
         for i in range(0, self.h.len()) {
-            store64(buf.mut_slice_from(i*8), self.h[i]);
+            store64(buf.slice_from_mut(i*8), self.h[i]);
         }
 
         for i in range(0, ::std::cmp::min(out.len(), OUT_BYTES)) {
@@ -237,7 +237,7 @@ mod tests {
             let mut out = [0u8, ..OUT_BYTES];
             let mut h = Blake2b::new(out_size);
             h.update(input.as_slice());
-            h.final(out.mut_slice(0, out_size));
+            h.final(out.slice_mut(0, out_size));
             assert_eq!(out.slice(0, out_size), kat::blake2b_kat_out_size[i]);
         }
     }
