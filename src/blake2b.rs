@@ -1,6 +1,6 @@
-pub static BLOCK_BYTES  : uint  = 128;
-pub static KEY_BYTES    : uint  = 64;
-pub static OUT_BYTES    : uint  = 64;
+pub const BLOCK_BYTES  : uint  = 128;
+pub const KEY_BYTES    : uint  = 64;
+pub const OUT_BYTES    : uint  = 64;
 
 static IV : [u64, ..8] = [
     0x6a09e667f3bcc908, 0xbb67ae8584caa73b, 0x3c6ef372fe94f82b, 0xa54ff53a5f1d36f1,
