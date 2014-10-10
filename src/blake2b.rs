@@ -107,7 +107,7 @@ impl Blake2b {
         }
     }
 
-    pub fn final(&mut self, out: &mut [u8]) {
+    pub fn finalize(&mut self, out: &mut [u8]) {
         let mut buf = [0u8, ..OUT_BYTES];
         if self.buf_len > BLOCK_BYTES {
             self.increment_counter(BLOCK_BYTES as u64);
@@ -237,7 +237,7 @@ mod tests {
             let mut out = [0u8, ..OUT_BYTES];
             let mut h = Blake2b::new(out_size);
             h.update(input.as_slice());
-            h.final(out.slice_mut(0, out_size));
+            h.finalize(out.slice_mut(0, out_size));
             assert_eq!(out.slice(0, out_size), kat::blake2b_kat_out_size[i]);
         }
     }
@@ -253,7 +253,7 @@ mod tests {
             let mut h = Blake2b::new(OUT_BYTES);
             let mut out = [0u8, ..OUT_BYTES];
             h.update(input.slice(0, i));
-            h.final(out);
+            h.finalize(out);
             assert_eq!(out.as_slice(), kat::blake2b_kat[i].as_slice());
         }
     }
@@ -275,7 +275,7 @@ mod tests {
             let mut h = Blake2b::new_with_key(OUT_BYTES, key.as_slice());
             let mut out = [0u8, ..OUT_BYTES];
             h.update(input.slice(0, i));
-            h.final(out);
+            h.finalize(out);
             assert_eq!(out.as_slice(), kat::blake2b_keyed_kat[i].as_slice());
         }
     }
