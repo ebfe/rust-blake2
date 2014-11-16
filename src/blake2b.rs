@@ -1,3 +1,5 @@
+use std::num::Int;
+
 pub const BLOCK_BYTES  : uint  = 128;
 pub const KEY_BYTES    : uint  = 64;
 pub const OUT_BYTES    : uint  = 64;
