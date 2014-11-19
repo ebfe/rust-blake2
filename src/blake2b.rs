@@ -255,7 +255,7 @@ mod tests {
             let mut h = Blake2b::new(OUT_BYTES);
             let mut out = [0u8, ..OUT_BYTES];
             h.update(input.slice(0, i));
-            h.finalize(out);
+            h.finalize(&mut out);
             assert_eq!(out.as_slice(), kat::BLAKE2B_KAT[i].as_slice());
         }
     }
@@ -277,7 +277,7 @@ mod tests {
             let mut h = Blake2b::new_with_key(OUT_BYTES, key.as_slice());
             let mut out = [0u8, ..OUT_BYTES];
             h.update(input.slice(0, i));
-            h.finalize(out);
+            h.finalize(&mut out);
             assert_eq!(out.as_slice(), kat::BLAKE2B_KEYED_KAT[i].as_slice());
         }
     }
