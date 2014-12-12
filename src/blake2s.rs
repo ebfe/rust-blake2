@@ -30,6 +30,8 @@ pub struct Blake2s {
     buf_len: uint,
 }
 
+impl Copy for Blake2s {}
+
 impl Blake2s {
     pub fn new(size: uint) -> Blake2s {
         assert!(size > 0 && size <= OUT_BYTES);
