@@ -214,7 +214,7 @@ fn encode_params(size: u8, keylen: u8) -> [u8, ..64] {
 fn load64(b: &[u8]) -> u64 {
     let mut v = 0u64;
     for i in range(0, 8) {
-        v |= b[i] as u64 << (8*i); 
+        v |= (b[i] as u64) << (8*i); 
     }
     v
 }
