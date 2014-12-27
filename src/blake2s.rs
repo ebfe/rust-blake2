@@ -174,7 +174,7 @@ impl Blake2s {
                 $c = $c + $d;
                 $b = ($b ^ $c).rotate_right(7);
             });
-        )
+        );
 
         macro_rules! round(
             ($r: expr) => ({
@@ -187,7 +187,7 @@ impl Blake2s {
                 g!($r, 6, v[ 2], v[ 7], v[ 8], v[13]);
                 g!($r, 7, v[ 3], v[ 4], v[ 9], v[14]);
             });
-        )
+        );
 
         for i in range(0, 10) {
             round!(i);
