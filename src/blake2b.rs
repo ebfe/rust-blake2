@@ -4,12 +4,12 @@ pub const BLOCK_BYTES  : uint  = 128;
 pub const KEY_BYTES    : uint  = 64;
 pub const OUT_BYTES    : uint  = 64;
 
-static IV : [u64, ..8] = [
+static IV : [u64; 8] = [
     0x6a09e667f3bcc908, 0xbb67ae8584caa73b, 0x3c6ef372fe94f82b, 0xa54ff53a5f1d36f1,
     0x510e527fade682d1, 0x9b05688c2b3e6c1f, 0x1f83d9abfb41bd6b, 0x5be0cd19137e2179,
 ];
 
-static SIGMA : [[u8, ..16], ..12] = [
+static SIGMA : [[u8; 16]; 12] = [
     [  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15 ],
     [ 14, 10,  4,  8,  9, 15, 13,  6,  1, 12,  0,  2, 11,  7,  5,  3 ],
     [ 11,  8, 12,  0,  5,  2, 15, 13, 10, 14,  3,  6,  7,  1,  9,  4 ],
@@ -26,10 +26,10 @@ static SIGMA : [[u8, ..16], ..12] = [
 
 
 pub struct Blake2b {
-    h: [u64, ..8],
-    t: [u64, ..2],
-    f: [u64, ..2],
-    buf: [u8, ..2*BLOCK_BYTES],
+    h: [u64; 8],
+    t: [u64; 2],
+    f: [u64; 2],
+    buf: [u8; 2*BLOCK_BYTES],
     buf_len: uint,
 }
 
@@ -50,7 +50,7 @@ impl Blake2b {
             h: state,
             t: [0, 0],
             f: [0, 0],
-            buf: [0u8, ..2*BLOCK_BYTES],
+            buf: [0u8; 2*BLOCK_BYTES],
             buf_len: 0,
         }
     }
@@ -70,11 +70,11 @@ impl Blake2b {
             h: state,
             t: [0, 0],
             f: [0, 0],
-            buf: [0u8, ..2*BLOCK_BYTES],
+            buf: [0u8; 2*BLOCK_BYTES],
             buf_len: 0,
         };
 
-        let mut block = [0u8, ..BLOCK_BYTES];
+        let mut block = [0u8; BLOCK_BYTES];
         for i in range(0, key.len()) {
             block[i] = key[i];
         }
@@ -112,7 +112,7 @@ impl Blake2b {
     }
 
     pub fn finalize(&mut self, out: &mut [u8]) {
-        let mut buf = [0u8, ..OUT_BYTES];
+        let mut buf = [0u8; OUT_BYTES];
         if self.buf_len > BLOCK_BYTES {
             self.increment_counter(BLOCK_BYTES as u64);
             self.compress();
@@ -143,8 +143,8 @@ impl Blake2b {
     }
 
     fn compress(&mut self) {
-        let mut m = [0u64, ..16];
-        let mut v = [0u64, ..16];
+        let mut m = [0u64; 16];
+        let mut v = [0u64; 16];
         let block = self.buf.as_slice();
 
         assert!(block.len() >= BLOCK_BYTES);
@@ -202,8 +202,8 @@ impl Blake2b {
     }
 }
 
-fn encode_params(size: u8, keylen: u8) -> [u8, ..64] {
-    let mut param = [0u8, ..64];
+fn encode_params(size: u8, keylen: u8) -> [u8; 64] {
+    let mut param = [0u8; 64];
     param[0] = size as u8;
     param[1] = keylen as u8;
     param[2] = 1; // fanout
@@ -234,11 +234,11 @@ mod tests {
 
     #[test]
     fn test_blake2b_out_size() {
-        let input = [0u8, ..256];
+        let input = [0u8; 256];
 
         for i in range(0, kat::BLAKE2B_KAT_OUT_SIZE.len()) {
             let out_size = i+1;
-            let mut out = [0u8, ..OUT_BYTES];
+            let mut out = [0u8; OUT_BYTES];
             let mut h = Blake2b::new(out_size);
             h.update(input.as_slice());
             h.finalize(out.slice_mut(0, out_size));
@@ -248,14 +248,14 @@ mod tests {
 
     #[test]
     fn test_blake2b_kat() {
-        let mut input = [0u8, ..256];
+        let mut input = [0u8; 256];
         for i in range(0, input.len()) {
             input[i] = i as u8;
         }
 
         for i in range(0, kat::BLAKE2B_KAT.len()) {
             let mut h = Blake2b::new(OUT_BYTES);
-            let mut out = [0u8, ..OUT_BYTES];
+            let mut out = [0u8; OUT_BYTES];
             h.update(input.slice(0, i));
             h.finalize(&mut out);
             assert_eq!(out.as_slice(), kat::BLAKE2B_KAT[i].as_slice());
@@ -264,8 +264,8 @@ mod tests {
 
     #[test]
     fn test_blake2b_keyed_kat() {
-        let mut input = [0u8, ..256];
-        let mut key = [0u8, ..KEY_BYTES];
+        let mut input = [0u8; 256];
+        let mut key = [0u8; KEY_BYTES];
 
         for i in range(0, input.len()) {
             input[i] = i as u8;
@@ -277,7 +277,7 @@ mod tests {
 
         for i in range(0, kat::BLAKE2B_KEYED_KAT.len()) {
             let mut h = Blake2b::new_with_key(OUT_BYTES, key.as_slice());
-            let mut out = [0u8, ..OUT_BYTES];
+            let mut out = [0u8; OUT_BYTES];
             h.update(input.slice(0, i));
             h.finalize(&mut out);
             assert_eq!(out.as_slice(), kat::BLAKE2B_KEYED_KAT[i].as_slice());
