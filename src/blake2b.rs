@@ -287,12 +287,14 @@ mod tests {
 
 #[cfg(test)]
 mod bench {
+    use std::iter::repeat;
+
     use super::{Blake2b, OUT_BYTES};
     use test::Bencher;
 
     fn bench_chunk_size(b: &mut Bencher, n: uint) {
         let mut h = Blake2b::new(OUT_BYTES);
-        let input = Vec::from_elem(n, 0);
+        let input : Vec<u8> = repeat(0).take(n).collect();
         b.bytes = input.len() as u64;
         b.iter(|| {
             h.update(input.as_slice());
