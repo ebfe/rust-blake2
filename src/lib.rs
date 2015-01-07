@@ -1,5 +1,3 @@
-#![feature(macro_rules)]
-
 #[cfg(test)]
 extern crate test;
 
