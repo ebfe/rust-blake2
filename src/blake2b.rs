@@ -1,8 +1,8 @@
 use std::num::Int;
 
-pub const BLOCK_BYTES  : uint  = 128;
-pub const KEY_BYTES    : uint  = 64;
-pub const OUT_BYTES    : uint  = 64;
+pub const BLOCK_BYTES  : usize = 128;
+pub const KEY_BYTES    : usize = 64;
+pub const OUT_BYTES    : usize = 64;
 
 static IV : [u64; 8] = [
     0x6a09e667f3bcc908, 0xbb67ae8584caa73b, 0x3c6ef372fe94f82b, 0xa54ff53a5f1d36f1,
@@ -30,13 +30,13 @@ pub struct Blake2b {
     t: [u64; 2],
     f: [u64; 2],
     buf: [u8; 2*BLOCK_BYTES],
-    buf_len: uint,
+    buf_len: usize,
 }
 
 impl Copy for Blake2b {}
 
 impl Blake2b {
-    pub fn new(size: uint) -> Blake2b {
+    pub fn new(size: usize) -> Blake2b {
         assert!(size > 0 && size <= OUT_BYTES);
 
         let param = encode_params(size as u8, 0);
@@ -55,7 +55,7 @@ impl Blake2b {
         }
     }
 
-    pub fn new_with_key(size: uint, key: &[u8]) -> Blake2b {
+    pub fn new_with_key(size: usize, key: &[u8]) -> Blake2b {
         assert!(size > 0 && size <= OUT_BYTES);
         assert!(key.len() > 0 && key.len() <= KEY_BYTES);
 
@@ -168,11 +168,11 @@ impl Blake2b {
 
         macro_rules! g(
             ($r: expr, $i: expr, $a: expr, $b: expr, $c: expr, $d: expr) => ({
-                $a = $a + $b + m[SIGMA[$r][2*$i+0] as uint];
+                $a = $a + $b + m[SIGMA[$r][2*$i+0] as usize];
                 $d = ($d ^ $a).rotate_right(32);
                 $c = $c + $d;
                 $b = ($b ^ $c).rotate_right(24);
-                $a = $a + $b + m[SIGMA[$r][2*$i+1] as uint];
+                $a = $a + $b + m[SIGMA[$r][2*$i+1] as usize];
                 $d = ($d ^ $a).rotate_right(16);
                 $c = $c + $d;
                 $b = ($b ^ $c).rotate_right(63);
@@ -292,7 +292,7 @@ mod bench {
     use super::{Blake2b, OUT_BYTES};
     use test::Bencher;
 
-    fn bench_chunk_size(b: &mut Bencher, n: uint) {
+    fn bench_chunk_size(b: &mut Bencher, n: usize) {
         let mut h = Blake2b::new(OUT_BYTES);
         let input : Vec<u8> = repeat(0).take(n).collect();
         b.bytes = input.len() as u64;

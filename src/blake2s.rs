@@ -1,8 +1,8 @@
 use std::num::Int;
 
-pub const BLOCK_BYTES : uint = 64;
-pub const OUT_BYTES   : uint = 32;
-pub const KEY_BYTES   : uint = 32;
+pub const BLOCK_BYTES : usize = 64;
+pub const OUT_BYTES   : usize = 32;
+pub const KEY_BYTES   : usize = 32;
 
 static IV : [u32; 8] = [
     0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
@@ -27,13 +27,13 @@ pub struct Blake2s {
     t: [u32; 2],
     f: [u32; 2],
     buf: [u8; 2*BLOCK_BYTES],
-    buf_len: uint,
+    buf_len: usize,
 }
 
 impl Copy for Blake2s {}
 
 impl Blake2s {
-    pub fn new(size: uint) -> Blake2s {
+    pub fn new(size: usize) -> Blake2s {
         assert!(size > 0 && size <= OUT_BYTES);
 
         let param = encode_params(size as u8, 0);
@@ -52,7 +52,7 @@ impl Blake2s {
         }
     }
 
-    pub fn new_with_key(size: uint, key: &[u8]) -> Blake2s {
+    pub fn new_with_key(size: usize, key: &[u8]) -> Blake2s {
         assert!(size > 0 && size <= OUT_BYTES);
         assert!(key.len() > 0 && key.len() <= KEY_BYTES);
 
@@ -165,11 +165,11 @@ impl Blake2s {
 
         macro_rules! g(
             ($r: expr, $i: expr, $a: expr, $b: expr, $c: expr, $d: expr) => ({
-                $a = $a + $b + m[SIGMA[$r][2*$i+0] as uint];
+                $a = $a + $b + m[SIGMA[$r][2*$i+0] as usize];
                 $d = ($d ^ $a).rotate_right(16);
                 $c = $c + $d;
                 $b = ($b ^ $c).rotate_right(12);
-                $a = $a + $b + m[SIGMA[$r][2*$i+1] as uint];
+                $a = $a + $b + m[SIGMA[$r][2*$i+1] as usize];
                 $d = ($d ^ $a).rotate_right(8);
                 $c = $c + $d;
                 $b = ($b ^ $c).rotate_right(7);
@@ -289,7 +289,7 @@ mod bench {
     use super::{Blake2s, OUT_BYTES};
     use test::Bencher;
 
-    fn bench_chunk_size(b: &mut Bencher, n: uint) {
+    fn bench_chunk_size(b: &mut Bencher, n: usize) {
         let mut h = Blake2s::new(OUT_BYTES);
         let input : Vec<u8> = repeat(0).take(n).collect();
         b.bytes = input.len() as u64;
