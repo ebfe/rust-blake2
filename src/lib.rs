@@ -1,5 +1,6 @@
-#[cfg(test)]
-extern crate test;
+#![feature(core)]
+
+#[cfg(test)] extern crate test;
 
 pub use blake2b::Blake2b;
 pub use blake2s::Blake2s;

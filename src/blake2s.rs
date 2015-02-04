@@ -40,7 +40,7 @@ impl Blake2s {
         let mut state = IV;
 
         for i in range(0, state.len()) {
-            state[i] ^= load32(param.slice_from(i*4));
+            state[i] ^= load32(&param[i*4..]);
         }
 
         Blake2s{
@@ -60,7 +60,7 @@ impl Blake2s {
         let mut state = IV;
 
         for i in range(0, state.len()) {
-            state[i] ^= load32(param.slice_from(i*4));
+            state[i] ^= load32(&param[i*4..]);
         }
 
         let mut b = Blake2s{
@@ -91,7 +91,7 @@ impl Blake2s {
                     self.buf[left+i] = m[i];
                 }
                 self.buf_len += fill;
-                m = m.slice_from(fill);
+                m = &m[fill..];
                 self.increment_counter(BLOCK_BYTES as u32);
                 self.compress();
                 for i in range(0, BLOCK_BYTES) {
@@ -103,7 +103,7 @@ impl Blake2s {
                     self.buf[left+i] = m[i];
                 }
                 self.buf_len += m.len();
-                m = m.slice_from(m.len());
+                m = &m[m.len()..];
             }
         }
     }
@@ -126,7 +126,7 @@ impl Blake2s {
         }
         self.compress();
         for i in range(0, self.h.len()) {
-            store32(buf.slice_from_mut(i*4), self.h[i]);
+            store32(&mut buf[i*4..], self.h[i]);
         }
 
         for i in range(0, ::std::cmp::min(out.len(), OUT_BYTES)) {
@@ -147,7 +147,7 @@ impl Blake2s {
         assert!(block.len() >= BLOCK_BYTES);
 
         for i in range(0, m.len()) {
-            m[i] = load32(block.slice_from(i*4));
+            m[i] = load32(&block[i*4..]);
         }
 
         for i in range(0, 8) {
@@ -238,8 +238,8 @@ mod tests {
             let mut out = [0u8; OUT_BYTES];
             let mut h = Blake2s::new(out_size);
             h.update(input.as_slice());
-            h.finalize(out.slice_mut(0, out_size));
-            assert_eq!(out.slice(0, out_size), kat::BLAKE2S_KAT_OUT_SIZE[i]);
+            h.finalize(&mut out[..out_size]);
+            assert_eq!(&out[..out_size], kat::BLAKE2S_KAT_OUT_SIZE[i]);
         }
     }
 
@@ -253,7 +253,7 @@ mod tests {
         for i in range(0, kat::BLAKE2S_KAT.len()) {
             let mut h = Blake2s::new(OUT_BYTES);
             let mut out = [0u8; OUT_BYTES];
-            h.update(input.slice(0, i));
+            h.update(&input[..i]);
             h.finalize(&mut out);
             assert_eq!(out.as_slice(), kat::BLAKE2S_KAT[i].as_slice());
         }
@@ -275,7 +275,7 @@ mod tests {
         for i in range(0, kat::BLAKE2S_KEYED_KAT.len()) {
             let mut h = Blake2s::new_with_key(OUT_BYTES, key.as_slice());
             let mut out = [0u8; OUT_BYTES];
-            h.update(input.slice(0, i));
+            h.update(&input[..i]);
             h.finalize(&mut out);
             assert_eq!(out.as_slice(), kat::BLAKE2S_KEYED_KAT[i].as_slice());
         }
