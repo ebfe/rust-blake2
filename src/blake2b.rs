@@ -167,13 +167,13 @@ impl Blake2b {
 
         macro_rules! g(
             ($r: expr, $i: expr, $a: expr, $b: expr, $c: expr, $d: expr) => ({
-                $a = $a + $b + m[SIGMA[$r][2*$i+0] as usize];
+                $a = $a.wrapping_add($b).wrapping_add(m[SIGMA[$r][2*$i+0] as usize]);
                 $d = ($d ^ $a).rotate_right(32);
-                $c = $c + $d;
+                $c = $c.wrapping_add($d);
                 $b = ($b ^ $c).rotate_right(24);
-                $a = $a + $b + m[SIGMA[$r][2*$i+1] as usize];
+                $a = $a.wrapping_add($b).wrapping_add(m[SIGMA[$r][2*$i+1] as usize]);
                 $d = ($d ^ $a).rotate_right(16);
-                $c = $c + $d;
+                $c = $c.wrapping_add($d);
                 $b = ($b ^ $c).rotate_right(63);
             });
         );
