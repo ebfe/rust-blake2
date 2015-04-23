@@ -76,7 +76,7 @@ impl Blake2s {
         for i in 0..key.len() {
             block[i] = key[i];
         }
-        b.update(block.as_slice());
+        b.update(block.as_ref());
         b
     }
 
@@ -143,7 +143,7 @@ impl Blake2s {
     fn compress(&mut self) {
         let mut m = [0u32; 16];
         let mut v = [0u32; 16];
-        let block = self.buf.as_slice();
+        let block = self.buf.as_ref();
 
         assert!(block.len() >= BLOCK_BYTES);
 
@@ -238,7 +238,7 @@ mod tests {
             let out_size = i+1;
             let mut out = [0u8; OUT_BYTES];
             let mut h = Blake2s::new(out_size);
-            h.update(input.as_slice());
+            h.update(input.as_ref());
             h.finalize(&mut out[..out_size]);
             assert_eq!(&out[..out_size], kat::BLAKE2S_KAT_OUT_SIZE[i]);
         }
@@ -256,7 +256,7 @@ mod tests {
             let mut out = [0u8; OUT_BYTES];
             h.update(&input[..i]);
             h.finalize(&mut out);
-            assert_eq!(out.as_slice(), kat::BLAKE2S_KAT[i].as_slice());
+            assert_eq!(out.as_ref(), kat::BLAKE2S_KAT[i].as_ref());
         }
     }
 
@@ -274,11 +274,11 @@ mod tests {
         }
 
         for i in 0..kat::BLAKE2S_KEYED_KAT.len() {
-            let mut h = Blake2s::new_with_key(OUT_BYTES, key.as_slice());
+            let mut h = Blake2s::new_with_key(OUT_BYTES, key.as_ref());
             let mut out = [0u8; OUT_BYTES];
             h.update(&input[..i]);
             h.finalize(&mut out);
-            assert_eq!(out.as_slice(), kat::BLAKE2S_KEYED_KAT[i].as_slice());
+            assert_eq!(out.as_ref(), kat::BLAKE2S_KEYED_KAT[i].as_ref());
         }
     }
 }
@@ -295,7 +295,7 @@ mod bench {
         let input : Vec<u8> = repeat(0).take(n).collect();
         b.bytes = input.len() as u64;
         b.iter(|| {
-            h.update(input.as_slice());
+            h.update(input.as_ref());
         });
     }
 
