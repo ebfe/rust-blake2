@@ -34,6 +34,7 @@ pub struct Blake2b {
 }
 
 impl Copy for Blake2b {}
+impl Clone for Blake2b { fn clone(&self) -> Blake2b { *self } }
 
 impl Blake2b {
     pub fn new(size: usize) -> Blake2b {
