@@ -42,7 +42,7 @@ impl Blake2b {
         let param = encode_params(size as u8, 0);
         let mut state = IV;
 
-        for i in range(0, state.len()) {
+        for i in 0..state.len() {
             state[i] ^= load64(&param[i*8..]);
         }
 
@@ -62,7 +62,7 @@ impl Blake2b {
         let param = encode_params(size as u8, key.len() as u8);
         let mut state = IV;
 
-        for i in range(0, state.len()) {
+        for i in 0..state.len() {
             state[i] ^= load64(&param[i*8..]);
         }
 
@@ -75,7 +75,7 @@ impl Blake2b {
         };
 
         let mut block = [0u8; BLOCK_BYTES];
-        for i in range(0, key.len()) {
+        for i in 0..key.len() {
             block[i] = key[i];
         }
         b.update(block.as_slice());
@@ -90,19 +90,19 @@ impl Blake2b {
             let fill = 2 * BLOCK_BYTES - left;
 
             if m.len() > fill {
-                for i in range(0, fill) {
+                for i in 0..fill {
                     self.buf[left+i] = m[i];
                 }
                 self.buf_len += fill;
                 m = &m[fill..];
                 self.increment_counter(BLOCK_BYTES as u64);
                 self.compress();
-                for i in range(0, BLOCK_BYTES) {
+                for i in 0..BLOCK_BYTES {
                     self.buf[i] = self.buf[i+BLOCK_BYTES];
                 }
                 self.buf_len -= BLOCK_BYTES;
             } else {
-                for i in range(0, m.len()) {
+                for i in 0..m.len() {
                     self.buf[left+i] = m[i];
                 }
                 self.buf_len += m.len();
@@ -116,7 +116,7 @@ impl Blake2b {
         if self.buf_len > BLOCK_BYTES {
             self.increment_counter(BLOCK_BYTES as u64);
             self.compress();
-            for i in range(0, BLOCK_BYTES) {
+            for i in 0..BLOCK_BYTES {
                 self.buf[i] = self.buf[i+BLOCK_BYTES];
             }
             self.buf_len -= BLOCK_BYTES;
@@ -124,15 +124,15 @@ impl Blake2b {
         let n = self.buf_len as u64;
         self.increment_counter(n);
         self.f[0] = !0;
-        for i in range(self.buf_len, self.buf.len()) {
+        for i in self.buf_len..self.buf.len() {
             self.buf[i] = 0;
         }
         self.compress();
-        for i in range(0, self.h.len()) {
+        for i in 0..self.h.len() {
             store64(&mut buf[i*8..], self.h[i]);
         }
 
-        for i in range(0, ::std::cmp::min(out.len(), OUT_BYTES)) {
+        for i in 0..::std::cmp::min(out.len(), OUT_BYTES) {
             out[i] = buf[i];
         }
     }
@@ -149,11 +149,11 @@ impl Blake2b {
 
         assert!(block.len() >= BLOCK_BYTES);
 
-        for i in range(0, m.len()) {
+        for i in 0..m.len() {
             m[i] = load64(&block[i*8..]);
         }
 
-        for i in range(0, 8) {
+        for i in 0..8 {
             v[i] = self.h[i];
         }
 
@@ -192,11 +192,11 @@ impl Blake2b {
             });
         );
 
-        for i in range(0, 12) {
+        for i in 0..12 {
             round!(i);
         }
 
-        for i in range(0, 8) {
+        for i in 0..8 {
             self.h[i] = self.h[i] ^ v[i] ^ v[i+8];
         }
     }
@@ -213,7 +213,7 @@ fn encode_params(size: u8, keylen: u8) -> [u8; 64] {
 
 fn load64(b: &[u8]) -> u64 {
     let mut v = 0u64;
-    for i in range(0, 8) {
+    for i in 0..8 {
         v |= (b[i] as u64) << (8*i); 
     }
     v
@@ -221,7 +221,7 @@ fn load64(b: &[u8]) -> u64 {
 
 fn store64(b: &mut [u8], v: u64) {
     let mut w = v;
-    for i in range(0, 8) {
+    for i in 0..8 {
         b[i] = w as u8;
         w >>= 8;
     }
@@ -236,7 +236,7 @@ mod tests {
     fn test_blake2b_out_size() {
         let input = [0u8; 256];
 
-        for i in range(0, kat::BLAKE2B_KAT_OUT_SIZE.len()) {
+        for i in 0..kat::BLAKE2B_KAT_OUT_SIZE.len() {
             let out_size = i+1;
             let mut out = [0u8; OUT_BYTES];
             let mut h = Blake2b::new(out_size);
@@ -249,11 +249,11 @@ mod tests {
     #[test]
     fn test_blake2b_kat() {
         let mut input = [0u8; 256];
-        for i in range(0, input.len()) {
+        for i in 0..input.len() {
             input[i] = i as u8;
         }
 
-        for i in range(0, kat::BLAKE2B_KAT.len()) {
+        for i in 0..kat::BLAKE2B_KAT.len() {
             let mut h = Blake2b::new(OUT_BYTES);
             let mut out = [0u8; OUT_BYTES];
             h.update(&input[..i]);
@@ -267,15 +267,15 @@ mod tests {
         let mut input = [0u8; 256];
         let mut key = [0u8; KEY_BYTES];
 
-        for i in range(0, input.len()) {
+        for i in 0..input.len() {
             input[i] = i as u8;
         }
 
-        for i in range(0, key.len()) {
+        for i in 0..key.len() {
             key[i] = i as u8;
         }
 
-        for i in range(0, kat::BLAKE2B_KEYED_KAT.len()) {
+        for i in 0..kat::BLAKE2B_KEYED_KAT.len() {
             let mut h = Blake2b::new_with_key(OUT_BYTES, key.as_slice());
             let mut out = [0u8; OUT_BYTES];
             h.update(&input[..i]);
